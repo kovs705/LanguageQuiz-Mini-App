@@ -367,12 +367,6 @@
       box-shadow: none;
     }
 
-    .language-actions {
-      display: grid;
-      gap: 12px;
-      margin-top: 18px;
-    }
-
     .primary-button {
       min-height: 54px;
       border-radius: 18px;
@@ -981,14 +975,6 @@
           <p class="section-copy" data-i18n="languageRailCopy">Language rails show today's work.</p>
           <div class="language-rings" id="language-rings"></div>
           <article class="language-card" id="language-card"></article>
-          <div class="language-actions">
-            <button class="primary-button" type="button" id="open-run-button">
-              <span data-i18n="openDailyRun">Open Daily Run</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                <path d="M5 12h14M13 5l7 7-7 7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-          </div>
         </div>
         <nav class="dock" aria-label="Future features">
           <button type="button" class="active" data-dock="run">
@@ -1024,9 +1010,6 @@
           <div class="level-row" id="run-levels" style="margin-bottom:14px;"></div>
           <div class="run-map" id="run-map"></div>
           <div class="run-stats" id="run-stats"></div>
-          <button class="primary-button" type="button" id="answer-current-button" style="width:100%;">
-            <span data-i18n="answerCurrent">Answer current card</span>
-          </button>
         </div>
       </section>
 
@@ -1553,6 +1536,8 @@
       });
       tg.BackButton.onClick(handleNativeBack);
       tg.MainButton.onClick(handlePrimaryAction);
+      const bottom = document.getElementById("bottom-action");
+      if (bottom) bottom.style.display = "none";
     }
 
     function haptic(type = "light") {
@@ -2046,8 +2031,6 @@
         }
       });
 
-      $("#open-run-button").addEventListener("click", () => setScreen("run"));
-      $("#answer-current-button").addEventListener("click", () => setScreen("answer"));
       $("#back-to-languages").addEventListener("click", () => setScreen("languages"));
       $("#back-to-run").addEventListener("click", () => setScreen("run"));
       $("#later-button").addEventListener("click", moveCurrentToEnd);
