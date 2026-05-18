@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" role="img" aria-label="Story rail inspired language selector">
+  <rect width="900" height="560" fill="#f6f4ff"/>
+  <rect x="280" y="48" width="340" height="464" rx="34" fill="#ffffff" stroke="#ded8f2"/>
+  <text x="318" y="104" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800" fill="#242334">Choose quizzes</text>
+  <text x="318" y="130" font-family="Inter, Arial, sans-serif" font-size="13" fill="#6d6b7c">Language rails show today's work</text>
+  <circle cx="342" cy="182" r="34" fill="none" stroke="#5c7cfa" stroke-width="5"/>
+  <circle cx="424" cy="182" r="34" fill="none" stroke="#19a974" stroke-width="5" stroke-dasharray="128 40"/>
+  <circle cx="506" cy="182" r="34" fill="none" stroke="#ffb703" stroke-width="5" stroke-dasharray="86 82"/>
+  <text x="342" y="187" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="800" fill="#242334">JP</text>
+  <text x="424" y="187" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="800" fill="#242334">EN</text>
+  <text x="506" y="187" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="800" fill="#242334">ZH</text>
+  <rect x="318" y="250" width="264" height="166" rx="26" fill="#242334"/>
+  <text x="346" y="298" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#cdd8ff">Japanese N5-N1</text>
+  <text x="346" y="336" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800" fill="#ffffff">4 waiting</text>
+  <text x="346" y="372" font-family="Inter, Arial, sans-serif" font-size="14" fill="#dfe5ff">Tap a ring to filter the deck</text>
+  <rect x="346" y="438" width="208" height="38" rx="19" fill="#5c7cfa"/>
+  <text x="450" y="463" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#ffffff">Open Today's Stack</text>
+  <text x="450" y="526" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#24313d">Story rail: language choice becomes a quick status scan</text>
+</svg>

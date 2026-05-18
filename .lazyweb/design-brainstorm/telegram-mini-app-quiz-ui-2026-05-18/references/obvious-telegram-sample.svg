@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" role="img" aria-label="Typical Telegram quiz mini app baseline">
+  <rect width="900" height="560" fill="#eef3f8"/>
+  <rect x="295" y="28" width="310" height="504" rx="36" fill="#17212b"/>
+  <rect x="317" y="62" width="266" height="438" rx="24" fill="#f7f8fa"/>
+  <rect x="337" y="88" width="226" height="32" rx="16" fill="#e7eef5"/>
+  <rect x="337" y="138" width="166" height="18" rx="9" fill="#9aa9b5"/>
+  <rect x="337" y="170" width="226" height="46" rx="12" fill="#ffffff" stroke="#d7e0ea"/>
+  <rect x="337" y="228" width="226" height="46" rx="12" fill="#ffffff" stroke="#d7e0ea"/>
+  <rect x="337" y="286" width="226" height="46" rx="12" fill="#ffffff" stroke="#d7e0ea"/>
+  <rect x="337" y="344" width="226" height="46" rx="12" fill="#ffffff" stroke="#d7e0ea"/>
+  <rect x="337" y="420" width="226" height="46" rx="18" fill="#2aabee"/>
+  <text x="450" y="450" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">Submit</text>
+  <text x="450" y="92" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700" fill="#536471">Typical Mini App</text>
+  <text x="450" y="155" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" fill="#283846">Selector, quiz, button</text>
+  <text x="450" y="195" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" fill="#536471">Option A</text>
+  <text x="450" y="253" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" fill="#536471">Option B</text>
+  <text x="450" y="311" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" fill="#536471">Option C</text>
+  <text x="450" y="369" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" fill="#536471">Option D</text>
+  <text x="450" y="526" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#24313d">The expected baseline: form-like and static</text>
+</svg>

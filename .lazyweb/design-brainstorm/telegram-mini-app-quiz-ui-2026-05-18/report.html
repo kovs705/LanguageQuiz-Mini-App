@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design Brainstorm: Telegram Mini App Quiz UI</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --paper: #ffffff;
+      --ink: #17212b;
+      --muted: #5e6b78;
+      --line: #dbe4ef;
+      --blue: #2aabee;
+      --blue-soft: #e7f4ff;
+      --green-soft: #edf8f3;
+      --shadow: 0 18px 50px rgba(23, 33, 43, .10);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Arial, sans-serif;
+    }
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 44px 22px 72px;
+    }
+    h1, h2, h3 {
+      line-height: 1.15;
+      margin: 0;
+      letter-spacing: 0;
+    }
+    h1 {
+      font-size: clamp(32px, 5vw, 56px);
+      max-width: 780px;
+    }
+    h2 {
+      font-size: 26px;
+      margin-top: 44px;
+      padding-top: 8px;
+    }
+    h3 {
+      font-size: 21px;
+      margin-top: 32px;
+    }
+    p { margin: 14px 0; }
+    a { color: #0b82c3; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    ul, ol { padding-left: 24px; }
+    li { margin: 7px 0; }
+    .lede {
+      margin: 22px 0 28px;
+      padding: 20px 22px;
+      background: var(--blue-soft);
+      border: 1px solid #b8dfff;
+      border-radius: 14px;
+      font-size: 18px;
+    }
+    .note {
+      padding: 16px 18px;
+      background: #fff7e6;
+      border: 1px solid #f2d28b;
+      border-radius: 12px;
+      color: #59400a;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      background: var(--paper);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px var(--line);
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th {
+      background: #edf3f9;
+      font-size: 13px;
+      text-transform: uppercase;
+      color: #435363;
+    }
+    tr:last-child td { border-bottom: 0; }
+    figure {
+      margin: 22px 0;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+    figure img {
+      display: block;
+      width: 100%;
+      max-height: 560px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+    figcaption {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #101923;
+      color: #e8f0f7;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .94em;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 18px 0;
+    }
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .card h3 { margin-top: 0; }
+    .callout {
+      background: var(--green-soft);
+      border: 1px solid #c7e8d9;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    @media (max-width: 720px) {
+      main { padding: 30px 16px 56px; }
+      .grid { grid-template-columns: 1fr; }
+      th, td { padding: 10px; }
+      pre { font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Design Brainstorm: Telegram Mini App Quiz UI</h1>
+    <section class="lede">
+      Prototype a three-screen hierarchy: <strong>Language Rail</strong> as the parent dashboard, <strong>Daily Run Map</strong> after the user chooses a language and level, and a taller <strong>Pass Stack</strong> for actual quiz answering.
+    </section>
+
+    <section class="note">
+      Lazyweb MCP was not exposed in this session and the local screenshot helper returned <code>NO_BROWSE</code>. This report uses web research, repo/bot context, and source-backed sketches saved in <code>references/</code>.
+    </section>
+
+    <h2>Which Ideas To Prototype</h2>
+    <table>
+      <thead><tr><th>Idea</th><th>Novelty</th><th>Feasibility</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td>Story Rail Language Picker</td><td>Medium</td><td>High</td><td>Parent screen</td></tr>
+        <tr><td>Daily Run Map</td><td>High</td><td>High</td><td>Language + level detail screen</td></tr>
+        <tr><td>Wallet Pass Stack</td><td>High</td><td>High</td><td>Quiz answering screen</td></tr>
+        <tr><td>Music Queue Deck</td><td>Medium</td><td>High</td><td>Behavior model inside stack</td></tr>
+        <tr><td>Language Passport Shell</td><td>Medium</td><td>High</td><td>Future profile/store frame</td></tr>
+      </tbody>
+    </table>
+
+    <h2>The Obvious Approach</h2>
+    <p>Most simple Telegram Mini Apps become a form: language selector, question text, four option buttons, and a submit button. Your current <code>index.html</code> is still the vanilla Telegram sample, so the baseline would naturally drift toward that.</p>
+    <figure>
+      <img src="references/obvious-telegram-sample.svg" alt="Typical Telegram sample baseline">
+      <figcaption>Typical baseline: selector, quiz, button. Easy to build, but not memorable.</figcaption>
+    </figure>
+
+    <h2>Product Frame</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Platform Constraints</h3>
+        <p><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages">GitHub Pages</a> works for the static HTML/CSS/JS shell. Telegram provides native-feeling chrome through theme variables, viewport values, BackButton, MainButton, SecondaryButton, SettingsButton, haptics, and storage APIs.</p>
+      </div>
+      <div class="card">
+        <h3>Data Reality</h3>
+        <p>The Python bot already supports question/options/correct index and optional explanations. For leaderboards, correctness should be judged by the bot/backend, because a static client can be inspected.</p>
+      </div>
+    </div>
+
+    <h2>IA Recommendation</h2>
+    <div class="callout">
+      <p><strong>Chosen hierarchy:</strong> First launch -> interface language -> Language Rail dashboard -> Daily Run Map for selected language + level -> tall Pass Stack answering screen -> result/explanation -> back to run map or next card.</p>
+    </div>
+    <ul>
+      <li>First launch: choose interface language, English or Russian.</li>
+      <li>Then choose quiz languages: Japanese, English, Chinese.</li>
+      <li>Parent screen: language rings for common users with several selected languages.</li>
+      <li>Detail screen: finite daily run map for the selected language and level.</li>
+      <li>Answering screen: taller pass stack with room for four options and optional explanation.</li>
+      <li>Card states: new, later, selected, answered, refused, done.</li>
+    </ul>
+
+    <h2>Cross-Pollination Ideas</h2>
+
+    <h3>From Wallet: Tall Pass Stack</h3>
+    <figure>
+      <img src="references/wallet-pass-stack.svg" alt="Wallet pass stack inspired quiz deck">
+      <figcaption>Quiz answering screen: taller top card with higher background cards.</figcaption>
+    </figure>
+    <p><strong>The pattern:</strong> important items become physical-feeling passes with a clear type, status, and primary action.</p>
+    <p><strong>Applied here:</strong> each quiz card is a pass: language, level, source channel, number in today's queue, and question. Answered cards get a stamp. Refused cards get a muted skipped stamp and can be opened from history.</p>
+<pre><code>+--------------------------------+
+| Japanese N4       Card 4 / 17  |
+|                         Trash  |
++--------------------------------+
+| Choose the correct reading     |
+|                                |
+|              予約              |
+|                                |
+| [よやく]        [やくそく]     |
+| [よてい]        [ようやく]     |
+|                                |
+| Explanation/result area        |
++--------------------------------+
+| Swipe aside = answer later     |
++--------------------------------+</code></pre>
+
+    <h3>From Music Apps: Today's Mix Queue</h3>
+    <figure>
+      <img src="references/music-queue.svg" alt="Music queue inspired quiz queue">
+      <figcaption>Inspired by queue/listening models where the current item and upcoming items coexist.</figcaption>
+    </figure>
+    <p><strong>The pattern:</strong> the current item is prominent; the upcoming queue remains visible and controllable.</p>
+    <p><strong>Applied here:</strong> the active card is Now Answering. Dismissing a card is equivalent to play later. The bottom queue strip shows the next few cards by language and level.</p>
+<pre><code>+--------------------------------+
+| Today's Mix              17    |
+| JP N5  EN B2  HSK 2  JP N4     |
++--------------------------------+
+| NOW ANSWERING                  |
+| HSK 2                          |
+| Which Chinese word means ...?  |
+|                                |
+| [A] [B]                        |
+| [C] [D]                        |
++--------------------------------+
+| Up next: English B2, JP N4     |
++--------------------------------+</code></pre>
+
+    <h3>From Social Stories: Language Rail</h3>
+    <figure>
+      <img src="references/story-language-rail.svg" alt="Story rail inspired language selector">
+      <figcaption>Parent screen: common users can scan several chosen languages at once.</figcaption>
+    </figure>
+    <p><strong>The pattern:</strong> circular progress communicates what is waiting without a table.</p>
+    <p><strong>Applied here:</strong> Japanese, English, and Chinese sit as rings above the selected language card. Tap a ring to choose the language, then choose or continue a level.</p>
+
+    <h3>From Games: Daily Run Map</h3>
+    <figure>
+      <img src="references/daily-run.svg" alt="Daily run map inspired quiz progress">
+      <figcaption>Language + level detail screen: a finite progression map for the selected track.</figcaption>
+    </figure>
+    <p><strong>The pattern:</strong> a day becomes a route with nodes. Progress is spatial and motivating.</p>
+    <p><strong>Applied here:</strong> once the user chooses Japanese N4, English B2, or HSK 2, each already-posted quiz is a node in today's route.</p>
+
+    <h3>From Passports: Profile And Store Shell</h3>
+    <figure>
+      <img src="references/passport-store.svg" alt="Language passport and future store slots">
+      <figcaption>Passport shell for identity, languages, and future monetization/customization.</figcaption>
+    </figure>
+    <p><strong>The pattern:</strong> a profile object collects stamps, achievements, and personalization.</p>
+    <p><strong>Applied here:</strong> the user has a Language Passport: interface language, active quiz languages, level badges, streaks, daily stamps, and future store customizations.</p>
+
+    <h2>Key Interaction Rules</h2>
+    <div class="grid">
+      <div class="card"><h3>Dismiss</h3><p>Dismiss means later today. Horizontal drag past threshold appends the card id to the end of the queue.</p></div>
+      <div class="card"><h3>Refuse</h3><p>Refuse is explicit via trash icon. It removes the card from the active queue but keeps it in history.</p></div>
+      <div class="card"><h3>Answer</h3><p>Tap one of four options, enable Telegram MainButton, submit, then show correctness and optional explanation.</p></div>
+      <div class="card"><h3>All Done</h3><p>Show processed count, answered count, refused count, review explanations, and Language Passport link.</p></div>
+    </div>
+
+    <h2>Static Build Strategy</h2>
+    <ul>
+      <li>Host the shell on GitHub Pages.</li>
+      <li>Fetch <code>quizzes/today.json</code> or accept quiz payload via Telegram launch/start parameter.</li>
+      <li>Use <code>Telegram.WebApp.sendData</code> for answer/refuse events when launched from a keyboard Mini App.</li>
+      <li>Use the bot/backend for leaderboards and anti-cheat scoring.</li>
+      <li>Cache preferences in DeviceStorage/localStorage.</li>
+    </ul>
+
+    <h2>Wild Cards</h2>
+    <div class="callout">
+      <p><strong>Museum Exhibit Card:</strong> the word/kanji/phrase is the artifact, options are placard labels, and explanation opens as a curator note. Beautiful for Japanese and Chinese, but maybe too editorial for fast daily answering.</p>
+      <p><strong>Calm Study Mode:</strong> borrow from meditation apps: one card at a time, soft progress, final recap, less streak pressure.</p>
+    </div>
+
+    <h2>Sources</h2>
+    <ul>
+      <li><a href="https://core.telegram.org/bots/webapps">Telegram Mini Apps docs</a></li>
+      <li><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages">GitHub Pages docs</a></li>
+      <li><a href="https://m1.material.io/components/cards.html">Material Design cards</a></li>
+      <li><a href="https://download.huihoo.com/google/gdgdevkit/DVD1/www.google.com/design/spec/patterns/gestures.html">Material Design gestures</a></li>
+      <li><a href="https://www.apple.com/wallet/">Apple Wallet</a></li>
+      <li><a href="https://support.spotify.com/us/article/now-playing/">Spotify Now Playing and Queue</a></li>
+      <li><a href="https://www.flip-it.app/">FLIP IT flashcard app</a></li>
+    </ul>
+  </main>
+</body>
+</html>

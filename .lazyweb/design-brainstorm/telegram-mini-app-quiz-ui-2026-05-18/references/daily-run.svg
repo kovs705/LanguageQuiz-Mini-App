@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" role="img" aria-label="Daily run map inspired quiz progress">
+  <rect width="900" height="560" fill="#f7fbff"/>
+  <rect x="238" y="52" width="424" height="454" rx="34" fill="#0f172a"/>
+  <text x="286" y="110" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="800" fill="#ffffff">Daily Run</text>
+  <text x="286" y="138" font-family="Inter, Arial, sans-serif" font-size="13" fill="#b8c2d4">Answer what the channels posted today</text>
+  <path d="M318 410 C360 330, 300 270, 360 220 S512 200, 538 136" fill="none" stroke="#475569" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="318" cy="410" r="23" fill="#22c55e"/>
+  <circle cx="354" cy="308" r="23" fill="#22c55e"/>
+  <circle cx="360" cy="220" r="23" fill="#eab308"/>
+  <circle cx="456" cy="198" r="23" fill="#334155"/>
+  <circle cx="538" cy="136" r="23" fill="#334155"/>
+  <text x="318" y="416" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800" fill="#052e16">1</text>
+  <text x="354" y="314" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800" fill="#052e16">2</text>
+  <text x="360" y="226" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800" fill="#422006">3</text>
+  <rect x="418" y="286" width="188" height="112" rx="22" fill="#ffffff"/>
+  <text x="444" y="326" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#475569">CURRENT NODE</text>
+  <text x="444" y="356" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="800" fill="#0f172a">HSK 2</text>
+  <text x="444" y="382" font-family="Inter, Arial, sans-serif" font-size="13" fill="#64748b">3 of 17</text>
+  <text x="450" y="526" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#24313d">Game run: finite path, no infinite generation expectation</text>
+</svg>

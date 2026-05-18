@@ -1,162 +1,2089 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Telegram Mini Apps Vanilla JS Sample App</title>
-    <style>
-        body {
-            --bg-color: var(--tg-theme-bg-color);
-            font: 12px/18px "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--tg-theme-text-color);
-            margin: 48px 24px;
-            padding: 0;
-            color-scheme: var(--tg-color-scheme);
-        }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Sensei Quiz Mini App</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%232aabee'/%3E%3Ctext x='32' y='41' text-anchor='middle' font-family='Arial' font-size='32' font-weight='900' fill='white'%3ES%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --tg-bg: var(--tg-theme-bg-color, #f4f7fb);
+      --tg-text: var(--tg-theme-text-color, #17212b);
+      --tg-hint: var(--tg-theme-hint-color, #738294);
+      --tg-link: var(--tg-theme-link-color, #2aabee);
+      --tg-button: var(--tg-theme-button-color, #2aabee);
+      --tg-button-text: var(--tg-theme-button-text-color, #ffffff);
+      --tg-secondary-bg: var(--tg-theme-secondary-bg-color, #ffffff);
+      --app-bg: #f4f7fb;
+      --surface: #ffffff;
+      --surface-2: #eef4fb;
+      --ink: #17212b;
+      --muted: #68778a;
+      --line: #d9e3ef;
+      --navy: #111a2f;
+      --navy-2: #263a67;
+      --success: #22c55e;
+      --warning: #f6b500;
+      --danger: #ef4444;
+      --shadow: 0 20px 50px rgba(23, 33, 43, .12);
+      --radius: 28px;
+      --safe-bottom: max(18px, env(safe-area-inset-bottom));
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    }
 
-        a {
-            color: var(--tg-theme-link-color);
-        }
-        #viewport {
-            position: fixed;
-            left: 0;
-            right: 0;
-            top: 0;
-            height: var(--tg-viewport-stable-height, 100vh);
-            pointer-events: none;
-            transition: all .2s ease;
-        }
-        #viewport:after {
-            content: '';
-            display: block;
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            border-width: 4px;
-            border-style: solid;
-            border-image: linear-gradient(45deg, rgba(64, 224, 208, .5), rgba(173, 255, 47, .5)) 1;
-        }
+    [data-theme="dark"] {
+      --app-bg: #101622;
+      --surface: #17212f;
+      --surface-2: #1f2c3c;
+      --ink: #f4f7fb;
+      --muted: #a8b4c4;
+      --line: #2d3b4d;
+      --navy: #0d1424;
+      --shadow: 0 20px 50px rgba(0, 0, 0, .28);
+      color-scheme: dark;
+    }
 
-        #viewport-params-size,
-        #viewport-params-expand {
-            content: attr(text);
-            position: absolute;
-            display: inline-block;
-            background: var(--tg-theme-link-color, rgb(64, 224, 208));
-            right: 4px;
-            left: auto;
-            font-size: 8px;
-            padding: 4px;
-            vertical-align: top;
-        }
-        #viewport-params-size {
-            top: 4px;
-        }
-        #viewport-params-expand {
-            top: 30px;
-        }
-    </style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+      background: var(--tg-bg);
+      color: var(--tg-text);
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 24% -10%, rgba(42, 171, 238, .14), transparent 34%),
+        linear-gradient(180deg, var(--app-bg), var(--tg-bg));
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app {
+      width: min(100%, 520px);
+      min-height: var(--tg-viewport-stable-height, 100vh);
+      margin: 0 auto;
+      padding: 16px 14px calc(90px + var(--safe-bottom));
+      position: relative;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, var(--tg-button), #5b7cfa);
+      color: var(--tg-button-text);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      letter-spacing: 0;
+      box-shadow: 0 10px 24px rgba(42, 171, 238, .24);
+      flex: 0 0 auto;
+    }
+
+    .brand-title {
+      min-width: 0;
+    }
+
+    .brand-title h1 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .brand-title p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 260px;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      color: var(--ink);
+      background: var(--surface);
+      display: inline-grid;
+      place-items: center;
+      box-shadow: inset 0 0 0 1px var(--line);
+      transition: transform .18s ease, background .18s ease;
+    }
+
+    .icon-button:active,
+    .primary-button:active,
+    .choice:active,
+    .chip:active {
+      transform: scale(.98);
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2.2;
+    }
+
+    .segmented {
+      display: flex;
+      padding: 4px;
+      border-radius: 16px;
+      background: var(--surface-2);
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+
+    .segmented button {
+      min-width: 44px;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 12px;
+      color: var(--muted);
+      background: transparent;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .segmented button.active {
+      color: var(--tg-button-text);
+      background: var(--tg-button);
+      box-shadow: 0 8px 18px rgba(42, 171, 238, .22);
+    }
+
+    .screen {
+      display: none;
+      animation: screenIn .22s ease both;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes screenIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .language-panel {
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: clamp(28px, 8vw, 42px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .section-copy {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .language-rings {
+      display: flex;
+      gap: 16px;
+      margin: 26px -6px 24px;
+      padding: 0 6px 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .language-rings::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ring-button {
+      min-width: 100px;
+      min-height: 112px;
+      padding: 0;
+      background: transparent;
+      color: var(--ink);
+      display: grid;
+      justify-items: center;
+      gap: 9px;
+    }
+
+    .ring {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      position: relative;
+      background:
+        radial-gradient(circle at 50% 50%, var(--surface) 0 55%, transparent 56%),
+        conic-gradient(var(--accent) calc(var(--progress) * 1%), rgba(122, 136, 153, .18) 0);
+      box-shadow: inset 0 0 0 1px rgba(122, 136, 153, .10);
+    }
+
+    .ring::after {
+      content: "";
+      position: absolute;
+      inset: 9px;
+      border-radius: 50%;
+      border: 1px solid rgba(122, 136, 153, .14);
+    }
+
+    .ring span {
+      font-weight: 900;
+      font-size: 23px;
+      letter-spacing: 0;
+      z-index: 1;
+    }
+
+    .ring-button strong {
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .ring-button.active .ring {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px color-mix(in srgb, var(--accent) 28%, transparent);
+    }
+
+    .language-card {
+      background: var(--navy);
+      color: #ffffff;
+      border-radius: 28px;
+      padding: 22px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .language-card::after {
+      content: "";
+      position: absolute;
+      width: 170px;
+      height: 170px;
+      right: -54px;
+      top: -62px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--accent) 28%, transparent);
+    }
+
+    .language-card h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.2;
+      letter-spacing: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .waiting-count {
+      margin: 8px 0 0;
+      font-size: 46px;
+      line-height: 1;
+      font-weight: 950;
+      letter-spacing: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .level-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .level-chip,
+    .chip {
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 14px;
+      color: inherit;
+      background: color-mix(in srgb, currentColor 10%, transparent);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 16%, transparent);
+      font-size: 13px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .level-chip.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: none;
+    }
+
+    .language-actions {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .primary-button {
+      min-height: 54px;
+      border-radius: 18px;
+      padding: 0 18px;
+      color: var(--tg-button-text);
+      background: var(--tg-button);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 900;
+      box-shadow: 0 16px 34px rgba(42, 171, 238, .24);
+      transition: transform .18s ease, opacity .18s ease;
+    }
+
+    .primary-button.secondary {
+      color: var(--ink);
+      background: var(--surface);
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+
+    .primary-button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .dock {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .dock button {
+      height: 62px;
+      border-radius: 20px;
+      color: var(--muted);
+      background: var(--surface);
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 5px;
+      box-shadow: inset 0 0 0 1px var(--line);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .dock svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    .dock button.active {
+      color: #ffffff;
+      background: var(--navy);
+    }
+
+    .run-panel {
+      padding: 18px;
+      background: var(--navy);
+      color: #ffffff;
+      min-height: 620px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .screen-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .screen-heading h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .screen-heading p {
+      margin: 4px 0 0;
+      color: color-mix(in srgb, currentColor 68%, transparent);
+      font-size: 13px;
+    }
+
+    .run-map {
+      position: relative;
+      height: 430px;
+      border-radius: 26px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .02)),
+        #0f172a;
+      overflow: hidden;
+    }
+
+    .run-map svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .node {
+      position: absolute;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      color: #ffffff;
+      background: #334155;
+      display: grid;
+      place-items: center;
+      font-weight: 950;
+      box-shadow: 0 16px 26px rgba(0, 0, 0, .22);
+      transform: translate(-50%, -50%);
+      border: 4px solid rgba(255, 255, 255, .08);
+    }
+
+    .node.done {
+      background: var(--success);
+      color: #052e16;
+    }
+
+    .node.current {
+      background: var(--warning);
+      color: #362900;
+      transform: translate(-50%, -50%) scale(1.08);
+    }
+
+    .node.later {
+      background: #64748b;
+    }
+
+    .node.refused {
+      background: var(--danger);
+    }
+
+    .node-card {
+      position: absolute;
+      left: 42%;
+      right: 18px;
+      bottom: 72px;
+      min-height: 134px;
+      padding: 20px;
+      border-radius: 24px;
+      color: #0f172a;
+      background: #ffffff;
+      box-shadow: 0 22px 36px rgba(0, 0, 0, .22);
+    }
+
+    .node-card span {
+      display: block;
+      color: #506176;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .node-card strong {
+      display: block;
+      margin-top: 10px;
+      font-size: 27px;
+      line-height: 1;
+    }
+
+    .node-card small {
+      display: block;
+      margin-top: 12px;
+      color: #627188;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .run-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .stat {
+      min-height: 70px;
+      padding: 12px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .08);
+      color: #ffffff;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 7px;
+      color: rgba(255, 255, 255, .68);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .answer-shell {
+      min-height: 640px;
+      position: relative;
+    }
+
+    .stack-stage {
+      position: relative;
+      height: min(660px, calc(var(--tg-viewport-stable-height, 100vh) - 170px));
+      min-height: 540px;
+      display: grid;
+      place-items: center;
+      padding-top: 44px;
+    }
+
+    .back-card {
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      height: 156px;
+      border-radius: 30px;
+      background: #dfe8f7;
+      top: 18px;
+      opacity: .92;
+    }
+
+    .back-card.second {
+      left: 4%;
+      right: 4%;
+      top: 82px;
+      height: 170px;
+      background: #cfe5dc;
+      opacity: .96;
+    }
+
+    .quiz-card {
+      width: min(100%, 460px);
+      min-height: 520px;
+      border-radius: 34px;
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+      overflow: hidden;
+      position: relative;
+      z-index: 2;
+      touch-action: pan-y;
+      user-select: none;
+      transition: transform .24s ease, opacity .24s ease;
+    }
+
+    .quiz-card.dragging {
+      transition: none;
+    }
+
+    .quiz-top {
+      height: 104px;
+      padding: 24px 24px 18px;
+      color: #ffffff;
+      background: var(--navy-2);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .quiz-top h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .quiz-top p {
+      margin: 7px 0 0;
+      color: rgba(255, 255, 255, .76);
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .trash-button {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      color: #ffffff;
+      background: rgba(255, 255, 255, .16);
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+    }
+
+    .trash-button svg {
+      width: 25px;
+      height: 25px;
+    }
+
+    .quiz-body {
+      padding: 28px 24px 24px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .prompt {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.18;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .artifact {
+      min-height: 94px;
+      display: flex;
+      align-items: center;
+      color: var(--navy-2);
+      font-size: clamp(50px, 18vw, 82px);
+      line-height: .95;
+      font-weight: 950;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .artifact.small {
+      font-size: clamp(31px, 10vw, 48px);
+      line-height: 1.05;
+    }
+
+    .choices {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .choice {
+      min-height: 54px;
+      border-radius: 18px;
+      padding: 10px 12px;
+      color: var(--navy-2);
+      background: #edf4ff;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.15;
+      transition: transform .16s ease, background .16s ease, color .16s ease;
+    }
+
+    .choice.selected {
+      background: var(--navy-2);
+      color: #ffffff;
+    }
+
+    .choice.correct {
+      background: #dcfce7;
+      color: #14532d;
+    }
+
+    .choice.wrong {
+      background: #fee2e2;
+      color: #7f1d1d;
+    }
+
+    .explanation {
+      min-height: 72px;
+      padding: 14px;
+      border-radius: 18px;
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+      display: none;
+    }
+
+    .explanation.visible {
+      display: block;
+    }
+
+    .explanation strong {
+      display: block;
+      color: var(--ink);
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .queue-strip {
+      position: fixed;
+      left: 50%;
+      bottom: calc(76px + var(--safe-bottom));
+      width: min(calc(100% - 28px), 492px);
+      transform: translateX(-50%);
+      z-index: 19;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 0 4px 8px;
+      scrollbar-width: none;
+    }
+
+    .queue-strip::-webkit-scrollbar {
+      display: none;
+    }
+
+    .queue-chip {
+      min-width: 72px;
+      min-height: 44px;
+      border-radius: 16px;
+      color: var(--ink);
+      background: var(--surface);
+      box-shadow: inset 0 0 0 1px var(--line);
+      font-size: 12px;
+      font-weight: 900;
+      display: grid;
+      place-items: center;
+    }
+
+    .queue-chip.current {
+      color: #ffffff;
+      background: var(--navy);
+    }
+
+    .bottom-action {
+      position: fixed;
+      left: 50%;
+      bottom: var(--safe-bottom);
+      width: min(calc(100% - 28px), 492px);
+      transform: translateX(-50%);
+      z-index: 20;
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .bottom-action > * {
+      pointer-events: auto;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(86px + var(--safe-bottom));
+      transform: translate(-50%, 12px);
+      width: min(calc(100% - 34px), 460px);
+      padding: 13px 16px;
+      border-radius: 18px;
+      color: #ffffff;
+      background: rgba(15, 23, 42, .92);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+      z-index: 30;
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .setup {
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 15, 26, .44);
+      display: none;
+      place-items: end center;
+      padding: 16px;
+      z-index: 40;
+    }
+
+    .setup.visible {
+      display: grid;
+    }
+
+    .setup-sheet {
+      width: min(100%, 500px);
+      background: var(--surface);
+      color: var(--ink);
+      border-radius: 30px;
+      padding: 22px;
+      box-shadow: 0 28px 80px rgba(0, 0, 0, .24);
+    }
+
+    .setup-sheet h2 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .setup-sheet p {
+      margin: 9px 0 18px;
+      color: var(--muted);
+    }
+
+    .setup-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .setup-option {
+      min-height: 72px;
+      padding: 12px;
+      border-radius: 18px;
+      color: var(--ink);
+      background: var(--surface-2);
+      box-shadow: inset 0 0 0 1px var(--line);
+      font-weight: 900;
+    }
+
+    .setup-option.active {
+      color: #ffffff;
+      background: var(--navy);
+      box-shadow: none;
+    }
+
+    @media (max-width: 390px) {
+      .app {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .language-panel {
+        padding: 20px;
+      }
+
+      .ring-button {
+        min-width: 86px;
+      }
+
+      .ring {
+        width: 78px;
+        height: 78px;
+      }
+
+      .node-card {
+        left: 28%;
+        right: 12px;
+      }
+
+      .quiz-top h2 {
+        font-size: 21px;
+      }
+
+      .prompt {
+        font-size: 20px;
+      }
+
+    }
+
+    @media (max-width: 340px) {
+      .choices {
+        grid-template-columns: 1fr;
+      }
+
+      .quiz-card {
+        min-height: 560px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        scroll-behavior: auto !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
 </head>
-
 <body>
-    <main>
-        <div align="center">
-            <a href="https://ton.org/"><img width="48" src="./assets/tapps.png" alt="logo of telegram web apps"></a>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">S</div>
+        <div class="brand-title">
+          <h1 data-i18n="appTitle">Sensei Quiz</h1>
+          <p id="header-subtitle">Daily channel quizzes</p>
         </div>
-        <h1>Modals</h1>
-        <button onclick="Telegram.WebApp.showAlert('Hello World!');">Launch Alert</button>
-        <button onclick="showPopup();">Launch Popup</button>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <div class="segmented" aria-label="Interface language">
+          <button type="button" data-ui-lang="en">EN</button>
+          <button type="button" data-ui-lang="ru">RU</button>
+        </div>
+        <button class="icon-button" type="button" id="settings-button" aria-label="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/>
+            <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.3 7A2 2 0 1 1 7.1 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 1 1 19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1a2 2 0 1 1 0 4H21a1.7 1.7 0 0 0-1.6 1Z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
 
-        <h1>Links</h1>
-        <ul>
-            <li>
-                <a href="javascript:Telegram.WebApp.openTelegramLink('https://t.me/trendingapps');">Open link within Telegram</a>
-            </li>
-            <li>
-                <a href="javascript:Telegram.WebApp.openLink('https://ton.org/');">Open link in external browser</a>
-            </li>
-            <li>
-                <a href="javascript:Telegram.WebApp.openLink('https://telegra.ph/api',{try_instant_view:true});">Open link inside Telegram webview</a>
-            </li>
-        </ul>
+    <main>
+      <section class="screen active" id="screen-languages" aria-live="polite">
+        <div class="panel language-panel">
+          <h2 class="section-title" data-i18n="chooseQuizzes">Choose quizzes</h2>
+          <p class="section-copy" data-i18n="languageRailCopy">Language rails show today's work.</p>
+          <div class="language-rings" id="language-rings"></div>
+          <article class="language-card" id="language-card"></article>
+          <div class="language-actions">
+            <button class="primary-button" type="button" id="open-run-button">
+              <span data-i18n="openDailyRun">Open Daily Run</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path d="M5 12h14M13 5l7 7-7 7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <nav class="dock" aria-label="Future features">
+          <button type="button" class="active" data-dock="run">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 19c4-9 8 1 12-8 1-2 2-4 4-6" stroke-width="2.2" stroke-linecap="round"/><path d="M5 19h14" stroke-width="2.2" stroke-linecap="round"/></svg>
+            <span data-i18n="dockRun">Run</span>
+          </button>
+          <button type="button" data-dock="leaderboards">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M8 21V9m8 12V3M4 21h16M4 15h4m8-6h4" stroke-width="2.2" stroke-linecap="round"/></svg>
+            <span data-i18n="dockRanks">Ranks</span>
+          </button>
+          <button type="button" data-dock="store">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M5 10h14l-1 11H6L5 10Z" stroke-width="2.2" stroke-linejoin="round"/><path d="M8 10a4 4 0 0 1 8 0" stroke-width="2.2" stroke-linecap="round"/></svg>
+            <span data-i18n="dockStore">Store</span>
+          </button>
+          <button type="button" data-dock="passport">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" stroke-width="2.2"/><path d="M9 8h6M9 12h6M9 16h4" stroke-width="2.2" stroke-linecap="round"/></svg>
+            <span data-i18n="dockPassport">Passport</span>
+          </button>
+        </nav>
+      </section>
 
-        <h1>Buttons</h1>
-        <button onclick="Telegram.WebApp.expand();">Expand Webview</button>
-        <button onclick="toggleMainButton();">Toggle Main Button</button>
+      <section class="screen" id="screen-run" aria-live="polite">
+        <div class="panel run-panel">
+          <div class="screen-header">
+            <button class="icon-button" type="button" id="back-to-languages" aria-label="Back">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M15 18 9 12l6-6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="screen-heading" style="flex:1;">
+              <h2 id="run-title">Japanese N4 Run</h2>
+              <p id="run-subtitle">Finite path for today</p>
+            </div>
+          </div>
+          <div class="level-row" id="run-levels" style="margin-bottom:14px;"></div>
+          <div class="run-map" id="run-map"></div>
+          <div class="run-stats" id="run-stats"></div>
+          <button class="primary-button" type="button" id="answer-current-button" style="width:100%;">
+            <span data-i18n="answerCurrent">Answer current card</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-answer" aria-live="polite">
+        <div class="answer-shell">
+          <div class="screen-header">
+            <button class="icon-button" type="button" id="back-to-run" aria-label="Back">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M15 18 9 12l6-6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="screen-heading" style="flex:1;">
+              <h2 id="answer-title">Japanese N4</h2>
+              <p id="answer-subtitle">Card 4 of 17 today</p>
+            </div>
+            <button class="icon-button" type="button" id="later-button" aria-label="Answer later">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M7 7h10v10M7 17 17 7" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <div class="stack-stage">
+            <div class="back-card"></div>
+            <div class="back-card second"></div>
+            <article class="quiz-card" id="quiz-card"></article>
+          </div>
+          <div class="queue-strip" id="queue-strip" aria-label="Quiz queue"></div>
+        </div>
+      </section>
     </main>
-    <div id="viewport"></div>
-    <div id="viewport-params-size"></div>
-    <div id="viewport-params-expand"></div>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script>
-        // Init TWA
-        Telegram.WebApp.ready();
+  </div>
 
-        // Event occurs whenever theme settings are changed in the user's Telegram app (including switching to night mode).
-        Telegram.WebApp.onEvent('themeChanged', function() {
-            document.documentElement.className = Telegram.WebApp.colorScheme;
+  <div class="bottom-action" id="bottom-action">
+    <button class="icon-button" type="button" id="bottom-secondary" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M15 18 9 12l6-6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="primary-button" type="button" id="bottom-primary">Open Daily Run</button>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="setup" id="setup">
+    <div class="setup-sheet">
+      <h2 data-i18n="setupTitle">Choose interface language</h2>
+      <p data-i18n="setupCopy">You can change this later. Quiz languages stay separate.</p>
+      <div class="setup-grid">
+        <button class="setup-option" type="button" data-setup-lang="en">English</button>
+        <button class="setup-option" type="button" data-setup-lang="ru">Русский</button>
+      </div>
+      <button class="primary-button" type="button" id="setup-continue" style="width:100%;" data-i18n="continue">Continue</button>
+    </div>
+  </div>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    const urlParams = new URLSearchParams(window.location.search);
+    const API_BASE = (
+      urlParams.get("api") ||
+      localStorage.getItem("sensei-api-base") ||
+      ""
+    ).replace(/\/$/, "");
+    const SETTINGS_STORAGE_KEY = "sensei-quiz-settings";
+    const LEGACY_STORAGE_KEY = "sensei-quiz-state";
+
+    function localDateKey(date = new Date()) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    const TODAY_DATE = localDateKey();
+
+    const i18n = {
+      en: {
+        appTitle: "Sensei Quiz",
+        headerSubtitle: "Daily channel quizzes",
+        chooseQuizzes: "Choose quizzes",
+        languageRailCopy: "Language rails show today's work.",
+        openDailyRun: "Open Daily Run",
+        answerCurrent: "Answer current card",
+        dockRun: "Run",
+        dockRanks: "Ranks",
+        dockStore: "Store",
+        dockPassport: "Passport",
+        setupTitle: "Choose interface language",
+        setupCopy: "You can change this later. Quiz languages stay separate.",
+        continue: "Continue",
+        waiting: "waiting",
+        done: "done",
+        refused: "refused",
+        later: "later",
+        levels: "Levels",
+        finitePath: "Finite path for today",
+        todayDate: "Today · {date}",
+        cardOf: "Card {current} of {total} today",
+        noQuizzesToday: "No sent quizzes for today yet.",
+        noQuizzesTodayCopy: "Open the Mini App again after the channel posts today's quizzes.",
+        chooseAnswer: "Choose an answer",
+        submitAnswer: "Submit answer",
+        nextCard: "Next card",
+        doneToday: "Done for today",
+        doneTodayCopy: "All answerable cards in this run are processed.",
+        reviewRun: "Review run",
+        answerLater: "Moved to the end of today's queue.",
+        refusedToast: "Card refused and kept in history.",
+        selectFirst: "Pick an option first.",
+        apiUnavailable: "Quiz API is not configured yet.",
+        apiLoadFailed: "Could not load sent quizzes.",
+        apiGradeFailed: "Could not grade this answer.",
+        loading: "Loading sent quizzes...",
+        correct: "Correct",
+        incorrect: "Not quite",
+        explanation: "Explanation",
+        noExplanation: "No explanation for this quiz yet.",
+        future: "Reserved for the next release.",
+        run: "Run",
+      },
+      ru: {
+        appTitle: "Sensei Quiz",
+        headerSubtitle: "Ежедневные квизы из каналов",
+        chooseQuizzes: "Выберите квизы",
+        languageRailCopy: "Языковые кольца показывают дела на сегодня.",
+        openDailyRun: "Открыть маршрут",
+        answerCurrent: "Ответить на карточку",
+        dockRun: "Маршрут",
+        dockRanks: "Рейтинг",
+        dockStore: "Магазин",
+        dockPassport: "Паспорт",
+        setupTitle: "Выберите язык интерфейса",
+        setupCopy: "Можно изменить позже. Языки квизов настраиваются отдельно.",
+        continue: "Продолжить",
+        waiting: "ожидают",
+        done: "готово",
+        refused: "отказ",
+        later: "позже",
+        levels: "Уровни",
+        finitePath: "Конечный маршрут на сегодня",
+        todayDate: "Сегодня · {date}",
+        cardOf: "Карточка {current} из {total} сегодня",
+        noQuizzesToday: "На сегодня квизов пока нет.",
+        noQuizzesTodayCopy: "Откройте Mini App снова после публикации квизов в канале.",
+        chooseAnswer: "Выберите ответ",
+        submitAnswer: "Отправить ответ",
+        nextCard: "Следующая карточка",
+        doneToday: "На сегодня готово",
+        doneTodayCopy: "Все доступные карточки в маршруте обработаны.",
+        reviewRun: "Посмотреть маршрут",
+        answerLater: "Карточка ушла в конец очереди.",
+        refusedToast: "Карточка пропущена и сохранена в истории.",
+        selectFirst: "Сначала выберите вариант.",
+        apiUnavailable: "API квизов пока не настроен.",
+        apiLoadFailed: "Не удалось загрузить отправленные квизы.",
+        apiGradeFailed: "Не удалось проверить ответ.",
+        loading: "Загружаю отправленные квизы...",
+        correct: "Верно",
+        incorrect: "Почти",
+        explanation: "Объяснение",
+        noExplanation: "Для этого квиза пока нет объяснения.",
+        future: "Место для следующего релиза.",
+        run: "Маршрут",
+      }
+    };
+
+    const languages = [
+      {
+        id: "japanese",
+        short: "JP",
+        name: { en: "Japanese", ru: "Японский" },
+        levels: ["N5", "N4", "N3", "N2", "N1"],
+        accent: "#5b74ff",
+        activeLevel: "N4",
+        cards: [
+          {
+            id: "jp-n4-001",
+            level: "N4",
+            prompt: { en: "Choose the correct reading", ru: "Выберите правильное чтение" },
+            artifact: "予約",
+            options: ["よやく", "やくそく", "よてい", "ようやく"]
+          },
+          {
+            id: "jp-n4-002",
+            level: "N4",
+            prompt: { en: "Pick the meaning", ru: "Выберите значение" },
+            artifact: "確認",
+            options: ["confirmation", "weather", "station", "discount"]
+          },
+          {
+            id: "jp-n4-003",
+            level: "N4",
+            prompt: { en: "Choose the correct reading", ru: "Выберите правильное чтение" },
+            artifact: "必要",
+            options: ["ひつよう", "ひよう", "ひつじ", "ひょう"]
+          },
+          {
+            id: "jp-n4-004",
+            level: "N4",
+            prompt: { en: "Pick the meaning", ru: "Выберите значение" },
+            artifact: "残念",
+            options: ["unfortunate", "simple", "quiet", "famous"]
+          }
+        ]
+      },
+      {
+        id: "english",
+        short: "EN",
+        name: { en: "English", ru: "Английский" },
+        levels: ["A1", "A2", "B1", "B2", "C1", "C2"],
+        accent: "#19a974",
+        activeLevel: "B2",
+        cards: [
+          {
+            id: "en-b2-001",
+            level: "B2",
+            prompt: { en: "Choose the closest synonym", ru: "Выберите ближайший синоним" },
+            artifact: "briefly",
+            options: ["shortly", "angrily", "rarely", "loudly"]
+          },
+          {
+            id: "en-b2-002",
+            level: "B2",
+            prompt: { en: "Complete the phrase", ru: "Дополните фразу" },
+            artifact: "She is used ___ early.",
+            options: ["to waking up", "wake up", "waking", "to wake"]
+          },
+          {
+            id: "en-b2-003",
+            level: "B2",
+            prompt: { en: "Pick the natural option", ru: "Выберите естественный вариант" },
+            artifact: "Despite ___ tired, he continued.",
+            options: ["being", "was", "to be", "been"]
+          }
+        ]
+      },
+      {
+        id: "chinese",
+        short: "ZH",
+        name: { en: "Chinese", ru: "Китайский" },
+        levels: ["HSK 1", "HSK 2", "HSK 3", "HSK 4", "HSK 5", "HSK 6"],
+        accent: "#f6b500",
+        activeLevel: "HSK 2",
+        cards: [
+          {
+            id: "zh-hsk2-001",
+            level: "HSK 2",
+            prompt: { en: "Choose the meaning", ru: "Выберите значение" },
+            artifact: "已经",
+            options: ["already", "because", "outside", "slowly"]
+          },
+          {
+            id: "zh-hsk2-002",
+            level: "HSK 2",
+            prompt: { en: "Choose the pinyin", ru: "Выберите пиньинь" },
+            artifact: "准备",
+            options: ["zhunbei", "zhidao", "zhuozi", "zuotian"]
+          },
+          {
+            id: "zh-hsk2-003",
+            level: "HSK 2",
+            prompt: { en: "Choose the meaning", ru: "Выберите значение" },
+            artifact: "机场",
+            options: ["airport", "classroom", "company", "park"]
+          }
+        ]
+      }
+    ];
+
+    const state = {
+      uiLang: "en",
+      selectedLanguageId: "japanese",
+      screen: "languages",
+      today: TODAY_DATE,
+      selectedOption: null,
+      resultCardId: null,
+      setupDone: false,
+      quizStatus: {},
+      answerResults: {},
+      queues: {},
+      remoteCards: {},
+      loadingKeys: {},
+    };
+
+    const $ = (selector) => document.querySelector(selector);
+    const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+
+    const screens = {
+      languages: $("#screen-languages"),
+      run: $("#screen-run"),
+      answer: $("#screen-answer"),
+    };
+
+    function t(key, values = {}) {
+      let phrase = (i18n[state.uiLang] && i18n[state.uiLang][key]) || i18n.en[key] || key;
+      Object.entries(values).forEach(([name, value]) => {
+        phrase = phrase.replace(`{${name}}`, value);
+      });
+      return phrase;
+    }
+
+    function currentLanguage() {
+      return languages.find((language) => language.id === state.selectedLanguageId) || languages[0];
+    }
+
+    function levelKey(level) {
+      return String(level).replace(/\s+/g, "").toUpperCase();
+    }
+
+    function remoteKey(language = currentLanguage()) {
+      return `${state.today}:${language.id}:${levelKey(language.activeLevel)}`;
+    }
+
+    function queueKey(language = currentLanguage()) {
+      return remoteKey(language);
+    }
+
+    function dayStateKey(date = state.today) {
+      return `sensei-quiz-state:${date}`;
+    }
+
+    function displayDate(dateString = state.today) {
+      const [year, month, day] = dateString.split("-").map(Number);
+      const date = new Date(year, month - 1, day);
+      return new Intl.DateTimeFormat(state.uiLang === "ru" ? "ru-RU" : "en-US", {
+        month: "short",
+        day: "numeric",
+      }).format(date);
+    }
+
+    function telegramInitData() {
+      return tg && tg.initData ? tg.initData : "";
+    }
+
+    function apiHeaders() {
+      return {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": telegramInitData(),
+      };
+    }
+
+    function normalizeApiCard(item, language) {
+      return {
+        id: item.id,
+        level: item.level || language.activeLevel,
+        prompt: {
+          en: item.question || t("chooseAnswer"),
+          ru: item.question || t("chooseAnswer"),
+        },
+        artifact: item.question || "",
+        options: Array.isArray(item.options) ? item.options.map(String) : [],
+        hasExplanation: Boolean(item.has_explanation),
+        date: item.date || state.today,
+        scheduledTime: item.scheduled_time || "",
+        remote: true,
+      };
+    }
+
+    function cardsFor(language = currentLanguage()) {
+      const cached = state.remoteCards[remoteKey(language)];
+      if (API_BASE && !cached) return [];
+      if (cached) return cached;
+      const matching = language.cards.filter((card) => card.level === language.activeLevel);
+      if (matching.length) return matching;
+      return language.cards.map((card) => ({
+        ...card,
+        id: `${language.id}-${language.activeLevel}-${card.id}`,
+        level: language.activeLevel,
+      }));
+    }
+
+    async function loadRemoteCards(language = currentLanguage(), options = {}) {
+      if (!API_BASE) {
+        if (!options.silent) showToast(t("apiUnavailable"));
+        return;
+      }
+      const key = remoteKey(language);
+      if (state.loadingKeys[key]) return;
+      state.loadingKeys[key] = true;
+      try {
+        if (!options.silent) showToast(t("loading"));
+        const params = new URLSearchParams({
+          language: language.id,
+          level: levelKey(language.activeLevel),
+          date: state.today,
         });
-
-        // Show main button
-        Telegram.WebApp.MainButton.setParams({
-            text: 'Main Button'
+        const response = await fetch(`${API_BASE}/api/today?${params}`, {
+          headers: { "X-Telegram-Init-Data": telegramInitData() },
         });
-        Telegram.WebApp.MainButton.onClick(function () {
-            Telegram.WebApp.showAlert('Main Button was clicked')
-        });	
-        Telegram.WebApp.MainButton.show();
+        if (!response.ok) {
+          throw new Error(`API returned ${response.status}`);
+        }
+        const payload = await response.json();
+        state.remoteCards[key] = Array.isArray(payload.items)
+          ? payload.items.map((item) => normalizeApiCard(item, language))
+          : [];
+        state.queues[queueKey(language)] = state.remoteCards[key].map((card) => card.id);
+        render();
+        updateBottomAction();
+        updateNativeButtons();
+      } catch (error) {
+        console.error(error);
+        if (!options.silent) showToast(t("apiLoadFailed"));
+      } finally {
+        delete state.loadingKeys[key];
+      }
+    }
 
-        // Function to call showPopup API
-        function showPopup() {
-            Telegram.WebApp.showPopup({
-                title: 'Title',
-                message: 'Some message',
-                buttons: [
-                    {id: 'link', type: 'default', text: 'Open ton.org'},
-                    {type: 'cancel'},
-                ]
-            }, function(btn) {
-                if (btn === 'link') {
-                    Telegram.WebApp.openLink('https://ton.org/');
-                }
-            });
-        };
+    function loadTodayRails() {
+      if (!API_BASE) return;
+      Promise.all(languages.map((language) => loadRemoteCards(language, { silent: true })))
+        .catch((error) => console.error(error));
+    }
 
-        // Function to toggle main TWA button
-        function toggleMainButton() {
-            if (Telegram.WebApp.MainButton.isVisible) {
-                Telegram.WebApp.MainButton.hide();
-            } else {
-                Telegram.WebApp.MainButton.show();
-            }
-        };
+    function queueFor(language = currentLanguage()) {
+      const key = queueKey(language);
+      if (!state.queues[key]) {
+        state.queues[key] = cardsFor(language).map((card) => card.id);
+      }
+      const validIds = cardsFor(language).map((card) => card.id);
+      state.queues[key] = state.queues[key].filter((id) => validIds.includes(id));
+      validIds.forEach((id) => {
+        if (!state.queues[key].includes(id)) {
+          state.queues[key].push(id);
+        }
+      });
+      return state.queues[key];
+    }
 
-        function setViewportData() {
-            var sizeEl = document.getElementById('viewport-params-size');
-            sizeEl.innerText = 'width: ' + window.innerWidth + ' x ' + 
-                'height: ' + Telegram.WebApp.viewportStableHeight;
+    function activeCards(language = currentLanguage()) {
+      const byId = new Map(cardsFor(language).map((card) => [card.id, card]));
+      return queueFor(language)
+        .map((id) => byId.get(id))
+        .filter(Boolean)
+        .filter((card) => !["answered", "refused"].includes(state.quizStatus[card.id]));
+    }
 
-            var expandEl = document.querySelector('#viewport-params-expand');
-            expandEl.innerText = 'Is Expanded: ' + (Telegram.WebApp.isExpanded ? 'true' : 'false');
+    function currentCard(language = currentLanguage()) {
+      return activeCards(language)[0] || null;
+    }
+
+    function cardById(cardId, language = currentLanguage()) {
+      return cardsFor(language).find((card) => card.id === cardId) || null;
+    }
+
+    function displayCard(language = currentLanguage()) {
+      if (state.screen === "answer" && state.resultCardId) {
+        return cardById(state.resultCardId, language) || currentCard(language);
+      }
+      return currentCard(language);
+    }
+
+    function cardNumber(card, language = currentLanguage()) {
+      const cards = cardsFor(language);
+      return Math.max(1, cards.findIndex((item) => item.id === card.id) + 1);
+    }
+
+    function progressFor(language) {
+      const cards = cardsFor(language);
+      const answered = cards.filter((card) => state.quizStatus[card.id] === "answered").length;
+      const refused = cards.filter((card) => state.quizStatus[card.id] === "refused").length;
+      const later = cards.filter((card) => state.quizStatus[card.id] === "later").length;
+      const waiting = cards.length - answered - refused;
+      return { total: cards.length, answered, refused, later, waiting };
+    }
+
+    function saveState() {
+      const settingsPayload = JSON.stringify({
+        uiLang: state.uiLang,
+        selectedLanguageId: state.selectedLanguageId,
+        setupDone: state.setupDone,
+        activeLevels: Object.fromEntries(languages.map((language) => [language.id, language.activeLevel])),
+      });
+      const dayPayload = JSON.stringify({
+        date: state.today,
+        quizStatus: state.quizStatus,
+        answerResults: state.answerResults,
+        queues: state.queues,
+      });
+      localStorage.setItem(SETTINGS_STORAGE_KEY, settingsPayload);
+      localStorage.setItem(dayStateKey(), dayPayload);
+      if (tg && tg.DeviceStorage && tg.isVersionAtLeast && tg.isVersionAtLeast("9.0")) {
+        tg.DeviceStorage.setItem(SETTINGS_STORAGE_KEY, settingsPayload);
+        tg.DeviceStorage.setItem(dayStateKey(), dayPayload);
+      }
+    }
+
+    function loadState() {
+      let settings = {};
+      try {
+        const legacy = JSON.parse(localStorage.getItem(LEGACY_STORAGE_KEY) || "{}");
+        settings = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) || "{}");
+        const dayState = JSON.parse(localStorage.getItem(dayStateKey()) || "{}");
+        Object.assign(state, legacy, settings, dayState);
+      } catch (error) {
+        console.warn("Could not load saved state", error);
+      }
+      state.today = TODAY_DATE;
+      const tgLang = tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code;
+      if (!state.setupDone && tgLang && tgLang.toLowerCase().startsWith("ru")) {
+        state.uiLang = "ru";
+      }
+      if (!languages.some((language) => language.id === state.selectedLanguageId)) {
+        state.selectedLanguageId = languages[0].id;
+      }
+      const activeLevels = settings.activeLevels || {};
+      languages.forEach((language) => {
+        if (activeLevels[language.id] && language.levels.includes(activeLevels[language.id])) {
+          language.activeLevel = activeLevels[language.id];
+        }
+      });
+      state.quizStatus = state.date === state.today ? state.quizStatus || {} : {};
+      state.answerResults = state.date === state.today ? state.answerResults || {} : {};
+      state.queues = state.date === state.today ? state.queues || {} : {};
+      state.answerResults = state.answerResults || {};
+      state.remoteCards = {};
+      state.loadingKeys = {};
+    }
+
+    function applyTelegramChrome() {
+      document.documentElement.dataset.theme = tg && tg.colorScheme === "dark" ? "dark" : "light";
+      if (!tg) return;
+      tg.ready();
+      tg.expand();
+      tg.setHeaderColor("secondary_bg_color");
+      if (tg.setBottomBarColor) tg.setBottomBarColor("bottom_bar_bg_color");
+      tg.onEvent("themeChanged", () => {
+        document.documentElement.dataset.theme = tg.colorScheme === "dark" ? "dark" : "light";
+      });
+      tg.BackButton.onClick(handleNativeBack);
+      tg.MainButton.onClick(handlePrimaryAction);
+    }
+
+    function haptic(type = "light") {
+      if (!tg || !tg.HapticFeedback) return;
+      if (type === "success" || type === "error") {
+        tg.HapticFeedback.notificationOccurred(type);
+      } else {
+        tg.HapticFeedback.impactOccurred(type);
+      }
+    }
+
+    function showToast(message) {
+      const toast = $("#toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove("visible"), 1900);
+    }
+
+    function setScreen(screen) {
+      state.screen = screen;
+      Object.entries(screens).forEach(([name, element]) => {
+        element.classList.toggle("active", name === screen);
+      });
+      if (screen === "run" || screen === "answer") {
+        loadRemoteCards();
+      }
+      render();
+      updateBottomAction();
+      updateNativeButtons();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function handleNativeBack() {
+      if (state.screen === "answer") {
+        setScreen("run");
+      } else if (state.screen === "run") {
+        setScreen("languages");
+      }
+    }
+
+    function handlePrimaryAction() {
+      if (state.screen === "languages") {
+        setScreen("run");
+      } else if (state.screen === "run") {
+        setScreen("answer");
+      } else {
+        submitAnswer();
+      }
+    }
+
+    function updateNativeButtons() {
+      if (!tg) return;
+      if (state.screen === "languages") {
+        tg.BackButton.hide();
+        tg.MainButton.setParams({ text: t("openDailyRun"), is_active: true, is_visible: true });
+      } else if (state.screen === "run") {
+        tg.BackButton.show();
+        tg.MainButton.setParams({ text: t("answerCurrent"), is_active: !!currentCard(), is_visible: true });
+      } else {
+        tg.BackButton.show();
+        const card = displayCard();
+        const text = state.quizStatus[card && card.id] === "answered" ? t("nextCard") : t("submitAnswer");
+        tg.MainButton.setParams({ text, is_active: !!card, is_visible: true });
+      }
+    }
+
+    function updateBottomAction() {
+      const primary = $("#bottom-primary");
+      const secondary = $("#bottom-secondary");
+      if (state.screen === "languages") {
+        secondary.style.visibility = "hidden";
+        primary.textContent = t("openDailyRun");
+      } else if (state.screen === "run") {
+        secondary.style.visibility = "visible";
+        primary.textContent = currentCard() ? t("answerCurrent") : t("doneToday");
+      } else {
+        secondary.style.visibility = "visible";
+        const card = displayCard();
+        primary.textContent = state.quizStatus[card && card.id] === "answered" ? t("nextCard") : t("submitAnswer");
+      }
+    }
+
+    function renderI18n() {
+      document.documentElement.lang = state.uiLang;
+      $$("[data-i18n]").forEach((element) => {
+        element.textContent = t(element.dataset.i18n);
+      });
+      $("#header-subtitle").textContent = `${t("headerSubtitle")} · ${t("todayDate", { date: displayDate() })}`;
+      $$("[data-ui-lang]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.uiLang === state.uiLang);
+      });
+      $$("[data-setup-lang]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.setupLang === state.uiLang);
+      });
+    }
+
+    function renderLanguages() {
+      const rings = $("#language-rings");
+      rings.innerHTML = languages.map((language) => {
+        const progress = progressFor(language);
+        const percent = progress.total ? Math.round(((progress.answered + progress.refused) / progress.total) * 100) : 0;
+        return `
+          <button class="ring-button ${language.id === state.selectedLanguageId ? "active" : ""}" type="button" data-language-id="${language.id}" style="--accent:${language.accent}; --progress:${percent};">
+            <span class="ring"><span>${language.short}</span></span>
+            <strong>${progress.waiting} ${t("waiting")}</strong>
+          </button>
+        `;
+      }).join("");
+
+      const language = currentLanguage();
+      const progress = progressFor(language);
+      const card = $("#language-card");
+      card.style.setProperty("--accent", language.accent);
+      card.innerHTML = `
+        <div>
+          <h2>${language.name[state.uiLang]}</h2>
+          <div class="waiting-count">${progress.waiting} ${t("waiting")}</div>
+          <p style="margin:12px 0 0;color:rgba(255,255,255,.72);font-weight:750;">${t("todayDate", { date: displayDate() })}</p>
+          <p style="margin:6px 0 0;color:rgba(255,255,255,.72);font-weight:750;">${progress.answered} ${t("done")} · ${progress.refused} ${t("refused")}</p>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:900;color:rgba(255,255,255,.66);text-transform:uppercase;margin-bottom:10px;">${t("levels")}</div>
+          <div class="level-row">
+            ${language.levels.map((level) => `<button class="level-chip ${level === language.activeLevel ? "active" : ""}" type="button" data-level="${level}">${level}</button>`).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderRun() {
+      const language = currentLanguage();
+      const progress = progressFor(language);
+      const active = activeCards(language);
+      const card = active[0];
+      $("#run-title").textContent = `${language.name[state.uiLang]} ${language.activeLevel} ${t("run")}`;
+      $("#run-subtitle").textContent = `${t("finitePath")} · ${t("todayDate", { date: displayDate() })}`;
+      $("#run-levels").innerHTML = language.levels.map((level) => (
+        `<button class="level-chip ${level === language.activeLevel ? "active" : ""}" type="button" data-run-level="${level}" style="${level === language.activeLevel ? `background:${language.accent};` : ""}">${level}</button>`
+      )).join("");
+
+      const cards = cardsFor(language);
+      const pathPoints = [
+        [22, 84], [28, 64], [25, 44], [38, 30], [56, 25], [72, 36], [78, 55], [64, 70], [48, 84]
+      ];
+      const points = cards.map((_, index) => pathPoints[index % pathPoints.length]);
+      const path = points.map((point, index) => `${index === 0 ? "M" : "L"} ${point[0]} ${point[1]}`).join(" ");
+
+      $("#run-map").innerHTML = `
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <path d="${path}" fill="none" stroke="rgba(148, 163, 184, .42)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        ${cards.map((item, index) => {
+          const point = points[index];
+          const status = state.quizStatus[item.id] || (item.id === (card && card.id) ? "current" : "waiting");
+          const nodeClass = status === "answered" ? "done" : status === "refused" ? "refused" : status === "later" ? "later" : item.id === (card && card.id) ? "current" : "";
+          return `<button class="node ${nodeClass}" type="button" data-node-id="${item.id}" style="left:${point[0]}%; top:${point[1]}%;">${index + 1}</button>`;
+        }).join("")}
+        <div class="node-card">
+          <span>${card ? "Current node" : progress.total ? t("doneToday") : t("todayDate", { date: displayDate() })}</span>
+          <strong>${card ? `${language.activeLevel}` : progress.total ? `${progress.answered}/${progress.total}` : "0"}</strong>
+          <small>${card ? `${cardNumber(card, language)} of ${progress.total}` : progress.total ? t("doneTodayCopy") : t("noQuizzesToday")}</small>
+        </div>
+      `;
+
+      $("#run-stats").innerHTML = `
+        <div class="stat"><strong>${progress.answered}</strong><span>${t("done")}</span></div>
+        <div class="stat"><strong>${progress.waiting}</strong><span>${t("waiting")}</span></div>
+        <div class="stat"><strong>${progress.refused}</strong><span>${t("refused")}</span></div>
+      `;
+    }
+
+    function renderAnswer() {
+      const language = currentLanguage();
+      const progress = progressFor(language);
+      const card = displayCard(language);
+      $("#answer-title").textContent = `${language.name[state.uiLang]} ${language.activeLevel}`;
+
+      if (!card) {
+        $("#answer-subtitle").textContent = t("todayDate", { date: displayDate() });
+        const emptyTitle = progress.total ? t("doneToday") : t("noQuizzesToday");
+        const emptyCopy = progress.total ? t("doneTodayCopy") : t("noQuizzesTodayCopy");
+        $("#quiz-card").innerHTML = `
+          <div class="quiz-top">
+            <div>
+              <h2>${emptyTitle}</h2>
+              <p>${progress.answered} ${t("done")} · ${progress.refused} ${t("refused")}</p>
+            </div>
+          </div>
+          <div class="quiz-body">
+            <p class="prompt">${emptyCopy}</p>
+            <button class="primary-button" type="button" id="review-run-button">${t("reviewRun")}</button>
+          </div>
+        `;
+        $("#queue-strip").innerHTML = "";
+        $("#queue-strip").style.display = "none";
+        return;
+      }
+
+      const number = cardNumber(card, language);
+      $("#answer-subtitle").textContent = `${t("cardOf", { current: number, total: progress.total })} · ${t("todayDate", { date: displayDate() })}`;
+      const status = state.quizStatus[card.id];
+      const answered = status === "answered";
+      const selected = state.selectedOption;
+      const answerResult = state.answerResults[card.id];
+      const correctIndex = answerResult ? answerResult.correct_index : null;
+      const prompt = card.prompt[state.uiLang] || card.prompt.en;
+      const explanation = answerResult && answerResult.explanation
+        ? answerResult.explanation
+        : t("noExplanation");
+      const artifactSmall = card.artifact.length > 8 ? "small" : "";
+
+      $("#quiz-card").innerHTML = `
+        <div class="quiz-top">
+          <div>
+            <h2>${language.name[state.uiLang]} ${card.level}</h2>
+            <p>${t("cardOf", { current: number, total: progress.total })}</p>
+          </div>
+          <button class="trash-button" type="button" id="trash-card" aria-label="Refuse answer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+              <path d="M3 6h18M8 6V4h8v2M7 6l1 15h8l1-15" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="quiz-body">
+          <p class="prompt">${prompt}</p>
+          <div class="artifact ${artifactSmall}">${card.artifact}</div>
+          <div class="choices">
+            ${card.options.map((option, index) => {
+              let choiceClass = "";
+              if (answered && index === correctIndex) choiceClass = "correct";
+              if (answered && index === selected && selected !== correctIndex) choiceClass = "wrong";
+              if (!answered && selected === index) choiceClass = "selected";
+              return `<button class="choice ${choiceClass}" type="button" data-option-index="${index}" ${answered ? "disabled" : ""}>${option}</button>`;
+            }).join("")}
+          </div>
+          <div class="explanation ${answered ? "visible" : ""}">
+            <strong>${answerResult && answerResult.correct ? t("correct") : t("incorrect")} · ${t("explanation")}</strong>
+            ${explanation}
+          </div>
+        </div>
+      `;
+
+      const active = activeCards(language);
+      $("#queue-strip").style.display = answered ? "none" : "flex";
+      $("#queue-strip").innerHTML = active.map((item, index) => `
+        <button class="queue-chip ${index === 0 ? "current" : ""}" type="button" data-queue-id="${item.id}">
+          ${item.level} · ${cardNumber(item, language)}
+        </button>
+      `).join("");
+
+      wireDrag();
+    }
+
+    function render() {
+      renderI18n();
+      renderLanguages();
+      renderRun();
+      renderAnswer();
+    }
+
+    function selectUiLanguage(lang) {
+      state.uiLang = lang;
+      saveState();
+      render();
+      updateBottomAction();
+      updateNativeButtons();
+    }
+
+    function setLanguage(languageId) {
+      state.selectedLanguageId = languageId;
+      state.selectedOption = null;
+      state.resultCardId = null;
+      saveState();
+      render();
+      loadRemoteCards();
+      haptic("light");
+    }
+
+    function setLevel(language, level) {
+      language.activeLevel = level;
+      state.selectedOption = null;
+      state.resultCardId = null;
+      state.queues[queueKey(language)] = cardsFor(language).map((card) => card.id);
+      saveState();
+      render();
+      loadRemoteCards(language);
+      updateBottomAction();
+      updateNativeButtons();
+      haptic("light");
+    }
+
+    function moveCurrentToEnd() {
+      const language = currentLanguage();
+      const card = currentCard(language);
+      if (!card) return;
+      const queue = queueFor(language);
+      queue.push(queue.shift());
+      state.quizStatus[card.id] = "later";
+      state.selectedOption = null;
+      state.resultCardId = null;
+      saveState();
+      render();
+      updateNativeButtons();
+      showToast(t("answerLater"));
+      haptic("medium");
+    }
+
+    function refuseCurrent() {
+      const card = currentCard();
+      if (!card) return;
+      state.quizStatus[card.id] = "refused";
+      state.selectedOption = null;
+      state.resultCardId = null;
+      saveState();
+      render();
+      updateBottomAction();
+      updateNativeButtons();
+      showToast(t("refusedToast"));
+      haptic("error");
+    }
+
+    async function submitAnswer() {
+      const card = displayCard();
+      if (!card) return;
+      if (state.quizStatus[card.id] === "answered") {
+        advanceAfterAnswered();
+        return;
+      }
+      if (state.selectedOption === null) {
+        showToast(t("selectFirst"));
+        haptic("light");
+        return;
+      }
+      if (!API_BASE) {
+        showToast(t("apiUnavailable"));
+        return;
+      }
+      let answerResult;
+      try {
+        const language = currentLanguage();
+        const response = await fetch(`${API_BASE}/api/answer`, {
+          method: "POST",
+          headers: apiHeaders(),
+          body: JSON.stringify({
+            quiz_id: card.id,
+            language: language.id,
+            level: levelKey(card.level || language.activeLevel),
+            selected_index: state.selectedOption,
+            date: state.today,
+          }),
+        });
+        if (!response.ok) {
+          throw new Error(`API returned ${response.status}`);
+        }
+        answerResult = await response.json();
+      } catch (error) {
+        console.error(error);
+        showToast(t("apiGradeFailed"));
+        return;
+      }
+      state.quizStatus[card.id] = "answered";
+      state.answerResults[card.id] = answerResult;
+      state.resultCardId = card.id;
+      saveState();
+      render();
+      updateBottomAction();
+      updateNativeButtons();
+      haptic(answerResult.correct ? "success" : "error");
+
+    }
+
+    function advanceAfterAnswered() {
+      const language = currentLanguage();
+      const card = state.resultCardId ? cardById(state.resultCardId, language) : currentCard(language);
+      if (!card) return;
+      const queue = queueFor(language);
+      const index = queue.indexOf(card.id);
+      if (index >= 0) queue.splice(index, 1);
+      queue.push(card.id);
+      state.selectedOption = null;
+      state.resultCardId = null;
+      saveState();
+      render();
+      updateBottomAction();
+      updateNativeButtons();
+    }
+
+    function pullCardToFront(cardId) {
+      const language = currentLanguage();
+      const queue = queueFor(language);
+      const index = queue.indexOf(cardId);
+      if (index <= 0) return;
+      queue.splice(index, 1);
+      queue.unshift(cardId);
+      state.selectedOption = null;
+      state.resultCardId = null;
+      saveState();
+      render();
+      haptic("light");
+    }
+
+    function wireDrag() {
+      const card = $("#quiz-card");
+      if (!card || !currentCard()) return;
+      let startX = 0;
+      let startY = 0;
+      let pointerId = null;
+
+      card.onpointerdown = (event) => {
+        if (event.target.closest("button")) return;
+        pointerId = event.pointerId;
+        startX = event.clientX;
+        startY = event.clientY;
+        card.setPointerCapture(pointerId);
+        card.classList.add("dragging");
+      };
+
+      card.onpointermove = (event) => {
+        if (pointerId !== event.pointerId) return;
+        const dx = event.clientX - startX;
+        const dy = event.clientY - startY;
+        if (Math.abs(dx) < 4) return;
+        const rotate = Math.max(-10, Math.min(10, dx / 18));
+        card.style.transform = `translate(${dx}px, ${dy * .18}px) rotate(${rotate}deg)`;
+      };
+
+      card.onpointerup = (event) => {
+        if (pointerId !== event.pointerId) return;
+        const dx = event.clientX - startX;
+        card.classList.remove("dragging");
+        pointerId = null;
+        if (Math.abs(dx) > 96) {
+          card.style.transform = `translate(${dx > 0 ? 560 : -560}px, 36px) rotate(${dx > 0 ? 16 : -16}deg)`;
+          card.style.opacity = "0";
+          window.setTimeout(() => {
+            card.style.transform = "";
+            card.style.opacity = "";
+            moveCurrentToEnd();
+          }, 180);
+        } else {
+          card.style.transform = "";
+        }
+      };
+
+      card.onpointercancel = () => {
+        pointerId = null;
+        card.classList.remove("dragging");
+        card.style.transform = "";
+      };
+    }
+
+    function bindEvents() {
+      document.addEventListener("click", (event) => {
+        const uiLang = event.target.closest("[data-ui-lang]");
+        if (uiLang) selectUiLanguage(uiLang.dataset.uiLang);
+
+        const setupLang = event.target.closest("[data-setup-lang]");
+        if (setupLang) selectUiLanguage(setupLang.dataset.setupLang);
+
+        const ring = event.target.closest("[data-language-id]");
+        if (ring) setLanguage(ring.dataset.languageId);
+
+        const level = event.target.closest("[data-level]");
+        if (level) setLevel(currentLanguage(), level.dataset.level);
+
+        const runLevel = event.target.closest("[data-run-level]");
+        if (runLevel) setLevel(currentLanguage(), runLevel.dataset.runLevel);
+
+        const option = event.target.closest("[data-option-index]");
+        if (option) {
+          state.selectedOption = Number(option.dataset.optionIndex);
+          renderAnswer();
+          updateBottomAction();
+          updateNativeButtons();
+          haptic("light");
         }
 
-        Telegram.WebApp.setHeaderColor('secondary_bg_color');
+        const queue = event.target.closest("[data-queue-id]");
+        if (queue) pullCardToFront(queue.dataset.queueId);
 
-        setViewportData();
-        Telegram.WebApp.onEvent('viewportChanged', setViewportData);
+        const node = event.target.closest("[data-node-id]");
+        if (node) {
+          pullCardToFront(node.dataset.nodeId);
+          setScreen("answer");
+        }
 
-        Telegram.WebApp.onEvent('themeChanged', function() {
-            document.body.setAttribute('style', '--bg-color:' + Telegram.WebApp.backgroundColor);
-        });
+        const dock = event.target.closest("[data-dock]");
+        if (dock && dock.dataset.dock !== "run") {
+          showToast(t("future"));
+        }
+      });
 
-    </script>
+      $("#open-run-button").addEventListener("click", () => setScreen("run"));
+      $("#answer-current-button").addEventListener("click", () => setScreen("answer"));
+      $("#back-to-languages").addEventListener("click", () => setScreen("languages"));
+      $("#back-to-run").addEventListener("click", () => setScreen("run"));
+      $("#later-button").addEventListener("click", moveCurrentToEnd);
+      $("#bottom-primary").addEventListener("click", handlePrimaryAction);
+      $("#bottom-secondary").addEventListener("click", handleNativeBack);
+      $("#settings-button").addEventListener("click", () => $("#setup").classList.add("visible"));
+      $("#setup-continue").addEventListener("click", () => {
+        state.setupDone = true;
+        saveState();
+        $("#setup").classList.remove("visible");
+      });
 
-    <!-- Eruda is console for mobile browsers -->
-    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-    <script>eruda.init();</script>
+      document.addEventListener("click", (event) => {
+        if (event.target.closest("#trash-card")) {
+          refuseCurrent();
+        }
+        if (event.target.closest("#review-run-button")) {
+          setScreen("run");
+        }
+      });
+    }
+
+    function boot() {
+      loadState();
+      applyTelegramChrome();
+      bindEvents();
+      render();
+      updateBottomAction();
+      updateNativeButtons();
+      loadTodayRails();
+      if (!state.setupDone) {
+        $("#setup").classList.add("visible");
+      }
+    }
+
+    boot();
+  </script>
 </body>
 </html>

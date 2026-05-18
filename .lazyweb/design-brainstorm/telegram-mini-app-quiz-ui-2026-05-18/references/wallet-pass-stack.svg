@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="640" viewBox="0 0 900 640" role="img" aria-label="Tall Wallet pass stack inspired quiz deck">
+  <rect width="900" height="640" fill="#f5f7fb"/>
+  <rect x="286" y="38" width="328" height="128" rx="28" fill="#dfe8f7"/>
+  <rect x="264" y="88" width="372" height="148" rx="30" fill="#cfe5dc"/>
+  <rect x="232" y="158" width="436" height="374" rx="34" fill="#ffffff" stroke="#dde5ee"/>
+  <rect x="232" y="158" width="436" height="88" rx="34" fill="#263a67"/>
+  <rect x="232" y="214" width="436" height="32" fill="#263a67"/>
+  <text x="274" y="202" font-family="Inter, Arial, sans-serif" font-size="21" font-weight="800" fill="#ffffff">Japanese N4</text>
+  <text x="274" y="232" font-family="Inter, Arial, sans-serif" font-size="14" fill="#d9e4ff">Card 4 of 17 today</text>
+  <circle cx="620" cy="202" r="25" fill="#ffffff" opacity=".16"/>
+  <path d="M612 193h16M616 193l2-6h6l2 6M615 200l3 18h7l3-18" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="274" y="286" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="750" fill="#1e2937">Choose the correct reading</text>
+  <text x="274" y="362" font-family="Inter, Arial, sans-serif" font-size="78" font-weight="850" fill="#263a67">予約</text>
+  <rect x="274" y="402" width="158" height="50" rx="16" fill="#edf4ff"/>
+  <rect x="468" y="402" width="158" height="50" rx="16" fill="#edf4ff"/>
+  <rect x="274" y="466" width="158" height="50" rx="16" fill="#edf4ff"/>
+  <rect x="468" y="466" width="158" height="50" rx="16" fill="#edf4ff"/>
+  <text x="353" y="433" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#263a67">よやく</text>
+  <text x="547" y="433" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#263a67">やくそく</text>
+  <text x="353" y="497" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#263a67">よてい</text>
+  <text x="547" y="497" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#263a67">ようやく</text>
+  <path d="M450 574c84 0 152-9 152-21s-68-21-152-21-152 9-152 21 68 21 152 21z" fill="#cad5e2"/>
+  <text x="450" y="618" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#24313d">Tall pass stack: higher cards, no prompt or answer overlap</text>
+</svg>

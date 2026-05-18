@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" role="img" aria-label="Music queue inspired quiz queue">
+  <rect width="900" height="560" fill="#f8faf4"/>
+  <rect x="260" y="54" width="380" height="452" rx="32" fill="#16201d"/>
+  <text x="298" y="112" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800" fill="#ffffff">Today's Mix</text>
+  <text x="298" y="140" font-family="Inter, Arial, sans-serif" font-size="13" fill="#a8b6b0">17 quiz posts available</text>
+  <rect x="298" y="170" width="304" height="132" rx="22" fill="#e9f6a4"/>
+  <text x="324" y="210" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700" fill="#24313d">NOW ANSWERING</text>
+  <text x="324" y="244" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="800" fill="#1e2937">Which word matches?</text>
+  <text x="324" y="278" font-family="Inter, Arial, sans-serif" font-size="14" fill="#4f5f59">Swipe away to play later</text>
+  <rect x="298" y="326" width="304" height="48" rx="14" fill="#23312d"/>
+  <rect x="298" y="386" width="304" height="48" rx="14" fill="#23312d"/>
+  <rect x="298" y="446" width="304" height="28" rx="14" fill="#23312d"/>
+  <circle cx="322" cy="350" r="9" fill="#e9f6a4"/>
+  <circle cx="322" cy="410" r="9" fill="#74d8c1"/>
+  <text x="344" y="355" font-family="Inter, Arial, sans-serif" font-size="14" fill="#ecf4ef">English B2 after this</text>
+  <text x="344" y="415" font-family="Inter, Arial, sans-serif" font-size="14" fill="#ecf4ef">HSK 3 later</text>
+  <path d="M583 228l24 0M595 216l12 12-12 12" fill="none" stroke="#16201d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="450" y="526" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#24313d">Music queue: postpone means move to the end, not disappear</text>
+</svg>

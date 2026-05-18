@@ -46,6 +46,23 @@ Open index.html in your preferred code editor or IDE.
 ### Customization
 Feel free to customize this web app to suit your needs. You can modify the HTML, CSS, and JavaScript files as required.
 
+## Connecting to SenseiPublisherBot
+This Mini App is safe to host from a public GitHub Pages repository because it does
+not need bot secrets or correct answers in the frontend.
+
+Configure BotFather with a URL that includes your private API base:
+
+```text
+https://<github-user>.github.io/LanguageQuiz-Mini-App/?api=https://api.example.com
+```
+
+The API should be served by `SenseiPublisherBot/mini_app_api.py`. The Mini App sends
+Telegram `initData` in `X-Telegram-Init-Data`, loads already-sent quizzes from
+`GET /api/today?date=YYYY-MM-DD`, and grades selected answers through
+`POST /api/answer` with the same date. User answer status stays in local storage on
+the device and is scoped per calendar day, so yesterday's progress cannot hide
+today's quizzes.
+
 ## Contributing
 If you'd like to contribute to this project, please follow these steps:
 
